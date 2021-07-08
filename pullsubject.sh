@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+#
+# Simple query and retrive of a Horos SCP from the command line
+# Tested with:
+# - macOS 10.13.6 High Sierra
+# - dcmtk: findscu v3.6.5 2019-10-28
+# - GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin17)
+#
+# Add the following node to Horos (Preferences > Locations):
+# 127.0.0.1 | localsu | 11113 | Q&R Checked | C-MOVE | Send Checked | TLS No | Local QR script | ELE
+#
+# AUTHOR : Mike Tyszka
+# PLACE  : Caltech
+# DATES  : 2021-07-08 JMT Update from old CBICQC code
 
 if [ $# -lt 1 ]
 then
