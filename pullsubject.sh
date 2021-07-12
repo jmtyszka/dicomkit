@@ -44,8 +44,6 @@ mkdir -p ${dicom_dir}
 
 context="-S -k 0008,0052="STUDY""
 
-# findscu -d ${context} -k 0008,103e="*Physio*" -k 0010,0010="Jod-2c2*" localhost 11112
-
 cmd="movescu -aet ${local_aet} --port ${local_port} ${debug} ${context} ""${search_keys}"" -od ${dicom_dir} ${remote_hostname} ${remote_port}"
 echo $cmd
 $cmd

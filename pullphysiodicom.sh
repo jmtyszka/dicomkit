@@ -14,18 +14,8 @@
 # PLACE  : Caltech
 # DATES  : 2021-07-08 JMT Adapt from old CBICQC code
 
-if [ $# -lt 1 ]
-then
-    echo "USAGE : pullphysiodicom.sh <Patient ID>"
-    echo "EXAMPLE : pullphysiodicom.sh CC1234"
-    exit
-fi
-
-pid=$1
-
 # Remote DICOM server info
 # Edit for local Horos setup
-remote_aet=evendim
 remote_hostname=127.0.0.1
 remote_port=11112
 
@@ -35,16 +25,14 @@ local_aet=localscu
 local_port=11113
 
 # Construct search keys for patient and series
-search_keys="-k 0008,0052=""SERIES"" -k 0010,0020=""*${pid}*"" -k 0008,103e=""*Physiolog*"""
+search_keys="-k 0008,0052=""STUDY"" -k 0020,000d=""1.3.12.2.1107.5.2.43.167050.30000021052817254262700000022"" -k 0008,103e=""*Physiolog"""
 
 # Query context - study level
 context="-S"
 
 # Output directory
-dicom_dir="dicom/${pid}/1"
-mkdir -p ${dicom_dir}
+dicom_dir="dicom/physiodicom"
+mkdir -p "${dicom_dir}"
 
-cmd="movescu -v -aet ${local_aet} --port ${local_port} ${context} ""${search_keys}"" -od ${dicom_dir} ${remote_hostname} ${remote_port}"
-echo $cmd
-$cmd
+movescu -v -aet ${local_aet} --port ${local_port} ${context} ""${search_keys}"" -od ${dicom_dir} ${remote_hostname} ${remote_port}
 

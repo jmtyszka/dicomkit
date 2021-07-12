@@ -14,21 +14,8 @@
 # PLACE  : Caltech
 # DATES  : 2021-07-08 JMT Adapt from old CBICQC code
 
-if [ $# -lt 1 ]
-then
-    echo "USAGE : findphysiodicom.sh <Patient ID>"
-    echo "EXAMPLE : findphysiodicom.sh CC1234"
-    exit
-fi
-
-pid=$1
-
-# Debugging and verbose output
-verbose="-d -v"
-
 # Remote DICOM server info
 # Edit for local Horos setup
-remote_aet=evendim
 remote_hostname=127.0.0.1
 remote_port=11112
 
@@ -38,9 +25,6 @@ local_aet=localscu
 local_port=11113
 
 # Construct search keys for patient and series
-search_keys=" -k 0008,0052=""SERIES"" -k 0010,0020=""*${pid}*"" -k 0008,103e=""*Physiolog*"" "
+search_keys=" -k 0008,0052=""SERIES"" -k 0008,103e=""*Physiolog"" -k 0020,000d="
 
-# Query context - study level
-context="-S"
-
-findscu ${verbose} ${context} ${search_keys} ${remote_hostname} ${remote_port}
+findscu -d -v -S ${search_keys} ${remote_hostname} ${remote_port}
