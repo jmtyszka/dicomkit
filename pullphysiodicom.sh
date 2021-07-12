@@ -23,9 +23,6 @@ fi
 
 pid=$1
 
-debug=""
-verbose="-v"
-
 # Remote DICOM server info
 # Edit for local Horos setup
 remote_aet=evendim
@@ -37,16 +34,17 @@ remote_port=11112
 local_aet=localscu
 local_port=11113
 
-# Construct search keys for physiologs for this subject
-search_keys="-k 0010,0020=""*${pid}*"" -k 0008,103e=""*Physiolog*"""
+# Construct search keys for patient and series
+search_keys="-k 0008,0052=""SERIES"" -k 0010,0020=""*${pid}*"" -k 0008,103e=""*Physiolog*"""
+
+# Query context - study level
+context="-S"
 
 # Output directory
 dicom_dir="dicom/${pid}/1"
 mkdir -p ${dicom_dir}
 
-context="-S -k 0008,0052="STUDY""
-
-cmd="movescu -aet ${local_aet} --port ${local_port} ${debug} $(verbose} ${context} ""${search_keys}"" -od ${dicom_dir} ${remote_hostname} ${remote_port}"
+cmd="movescu -v -aet ${local_aet} --port ${local_port} ${context} ""${search_keys}"" -od ${dicom_dir} ${remote_hostname} ${remote_port}"
 echo $cmd
 $cmd
 

@@ -4,7 +4,6 @@ import argparse
 
 from pynetdicom import AE
 from pydicom.dataset import Dataset
-from pynetdicom.sop_class import StudyRootQueryRetrieveInformationModelFind
 
 def main():
 
@@ -15,21 +14,21 @@ def main():
 
     args = parser.parse_args()
 
-    addr = '131.215.9.86'
+    # Horos IP and port
+    addr = '131.215.79.36'
     port = 11112
 
     # Test C-ECHO response from server
-    test_cecho(addr, port)
+    ping_server(addr, port)
 
     # Test simple query of remote server
-    patient_search = "QC*"
-    patient_list = test_query(addr, port, patient_search)
+    patient_search = "CC*"
+    series_search = "*Physiolog"
 
-    # Get the first study from the remote server
-    get_patient(addr, port, patient_list[0])
+    results = move_patient_series(addr, port, patient_search, series_search)
 
 
-def test_cecho(addr, port):
+def ping_server(addr, port):
 
     ae = AE(ae_title=b'MY_ECHO_SCU')
 
@@ -58,7 +57,12 @@ def test_cecho(addr, port):
         assoc.release()
 
 
-def test_query(addr, port, patient_search):
+def find_patient_series(addr, port, patient_search, series_search):
+
+    # Hard code QR model
+    # Declared in sop_class in pynetdicom 2.0
+    StudyRootQueryRetrieveInformationModelFind= '1.2.840.10008.5.1.4.1.2.2.1'
+    StudyRootQueryRetrieveInformationModelMove= '1.2.840.10008.5.1.4.1.2.2.2'
 
     # Initialise the Application Entity
     ae = AE()
@@ -70,12 +74,13 @@ def test_query(addr, port, patient_search):
     # Associate with peer AE
     assoc = ae.associate(addr, port)
 
-    # Create our Identifier (query) dataset
+    # Create a study level query
     ds = Dataset()
+    ds.QueryRetrieveLevel = 'SERIES'
     ds.PatientName = patient_search
-    ds.QueryRetrieveLevel = 'STUDY'
+    ds.SeriesDescription = series_search
 
-    patient_list = []
+    study_list = []
 
     if assoc.is_established:
 
@@ -86,17 +91,13 @@ def test_query(addr, port, patient_search):
 
             if status:
 
-                # print('C-FIND query status: 0x{0:04x}'.format(status.Status))
-
                 if status.Status & 0xF000 == 0xC000:
                     print("* Could not process query")
 
                 # If the status is 'Pending' then identifier is the C-FIND response
                 if status.Status in (0xFF00, 0xFF01):
 
-                    print('Found patient {}'.format(identifier.PatientName))
-
-                    patient_list.append(identifier.PatientName)
+                    print('Found {} {}'.format(identifier.PatientName, identifier.SeriesDescription))
 
             else:
 
@@ -109,11 +110,62 @@ def test_query(addr, port, patient_search):
 
         print('Association rejected, aborted or never connected')
 
-    return patient_list
+    return study_list
 
-def get_patient(addr, port, patname):
 
-    pass
+def move_patient_series(addr, port, patient_search, series_search):
+
+    # Hard code QR model
+    # Declared in sop_class in pynetdicom 2.0
+    StudyRootQueryRetrieveInformationModelMove= '1.2.840.10008.5.1.4.1.2.2.2'
+
+    # Initialise the Application Entity
+    ae = AE()
+
+    # Add a requested presentation context
+    # Horos uses a StudyRoot model for Q&R
+    ae.add_requested_context(StudyRootQueryRetrieveInformationModelMove)
+
+    # Create a series level query
+    ds = Dataset()
+    ds.QueryRetrieveLevel = 'SERIES'
+    ds.PatientName = patient_search
+    ds.SeriesDescription = series_search
+
+    # Associate with peer AE
+    assoc = ae.associate(addr, port)
+
+    study_list = []
+
+    if assoc.is_established:
+
+        # Use the C-MOVE service to send the identifier
+        responses = assoc.send_c_move(ds, b'DICOMKIT_STORE', StudyRootQueryRetrieveInformationModelMove)
+
+        for (status, identifier) in responses:
+
+            print(status, identifier)
+
+            if status:
+
+                if status.Status & 0xF000 == 0xC000:
+                    print("* Could not process query")
+
+                if status.Status in (0xFF00, 0xFF01):
+                    print('Found {} {}'.format(identifier.PatientName, identifier.SeriesDescription))
+
+            else:
+
+                print('Connection timed out, was aborted or received invalid response')
+
+        # Release the association
+        assoc.release()
+
+    else:
+
+        print('Association rejected, aborted or never connected')
+
+    return study_list
 
 
 if "__main__" in __name__:

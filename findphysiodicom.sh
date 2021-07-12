@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Simple retrieval of DICOM Physiolog files from a Horos database
+# Simple query of DICOM Physiolog files from a Horos database
 #
 # Tested with:
 # - macOS 10.13.6 High Sierra
@@ -37,14 +37,10 @@ remote_port=11112
 local_aet=localscu
 local_port=11113
 
-# Construct search keys for this subjects
-subj_search_keys="-k 0008,0052=""STUDY"" -k 0010,0020=""*${pid}*"""
-
-# Construct search keys for physiologs
-physio_search_keys="-k 0008,0052=""SERIES"" -k 0008,103e=""*Physiolog*"""
+# Construct search keys for patient and series
+search_keys=" -k 0008,0052=""SERIES"" -k 0010,0020=""*${pid}*"" -k 0008,103e=""*Physiolog*"" "
 
 # Query context - study level
 context="-S"
 
-# findscu ${verbose} ${context} ${physio_search_keys} ${remote_hostname} ${remote_port}
-findscu ${verbose} ${context} ${subj_search_keys} ${remote_hostname} ${remote_port}
+findscu ${verbose} ${context} ${search_keys} ${remote_hostname} ${remote_port}
