@@ -2,7 +2,7 @@
 
 import argparse
 
-from pynetdicom import AE
+from pynetdicom import AE, debug_logger
 from pydicom.dataset import Dataset
 
 def main():
@@ -22,10 +22,11 @@ def main():
     ping_server(addr, port)
 
     # Test simple query of remote server
-    patient_search = "CC*"
+    patient_search = "Jmt*"
     series_search = "*Physiolog"
 
-    results = move_patient_series(addr, port, patient_search, series_search)
+    results = find_patient_series(addr, port, patient_search, series_search)
+    # results = move_patient_series(addr, port, patient_search, series_search)
 
 
 def ping_server(addr, port):
@@ -62,7 +63,6 @@ def find_patient_series(addr, port, patient_search, series_search):
     # Hard code QR model
     # Declared in sop_class in pynetdicom 2.0
     StudyRootQueryRetrieveInformationModelFind= '1.2.840.10008.5.1.4.1.2.2.1'
-    StudyRootQueryRetrieveInformationModelMove= '1.2.840.10008.5.1.4.1.2.2.2'
 
     # Initialise the Application Entity
     ae = AE()
@@ -84,6 +84,8 @@ def find_patient_series(addr, port, patient_search, series_search):
 
     if assoc.is_established:
 
+        print('Association with {}:{} established'.format(addr, port))
+
         # Use the C-FIND service to send the identifier
         responses = assoc.send_c_find(ds, StudyRootQueryRetrieveInformationModelFind)
 
@@ -104,7 +106,10 @@ def find_patient_series(addr, port, patient_search, series_search):
                 print('Connection timed out, was aborted or received invalid response')
 
         # Release the association
+        print('Releasing association')
         assoc.release()
+        print('Done')
+        print('')
 
     else:
 
@@ -114,6 +119,8 @@ def find_patient_series(addr, port, patient_search, series_search):
 
 
 def move_patient_series(addr, port, patient_search, series_search):
+
+    debug_logger()
 
     # Hard code QR model
     # Declared in sop_class in pynetdicom 2.0
@@ -128,9 +135,9 @@ def move_patient_series(addr, port, patient_search, series_search):
 
     # Create a series level query
     ds = Dataset()
-    ds.QueryRetrieveLevel = 'SERIES'
-    ds.PatientName = patient_search
-    ds.SeriesDescription = series_search
+    ds.QueryRetrieveLevel = 'STUDY'
+    ds.PatientName = 'CC*'
+    ds.SeriesDescription = '*Physiolog'
 
     # Associate with peer AE
     assoc = ae.associate(addr, port)
@@ -138,6 +145,8 @@ def move_patient_series(addr, port, patient_search, series_search):
     study_list = []
 
     if assoc.is_established:
+
+        print('Association with {}:{} established'.format(addr, port))
 
         # Use the C-MOVE service to send the identifier
         responses = assoc.send_c_move(ds, b'DICOMKIT_STORE', StudyRootQueryRetrieveInformationModelMove)

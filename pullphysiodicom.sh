@@ -25,7 +25,7 @@ local_aet=localscu
 local_port=11113
 
 # Construct search keys for patient and series
-search_keys="-k 0008,0052=""STUDY"" -k 0020,000d=""1.3.12.2.1107.5.2.43.167050.30000021052817254262700000022"" -k 0008,103e=""*Physiolog"""
+search_keys="-k 0008,0052=""SERIES"" -k 0008,103e=""*Physiolog"""
 
 # Query context - study level
 context="-S"
