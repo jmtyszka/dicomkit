@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="Fix patient series search in shell scripts. Extend pynetdicom script">
-      <change afterPath="$PROJECT_DIR$/pullphysiodicoms.py" afterDir="false" />
+    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="Almost working pynetdicom c-move DICOM physiologs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicomkit_pullstudy.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit_pullstudy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pullphysiodicom.sh" beforeDir="false" afterPath="$PROJECT_DIR$/pullphysiodicom.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicomkit_pullstudy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/findphysiodicom.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pullphysiodicom.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pullphysiodicoms.py" beforeDir="false" afterPath="$PROJECT_DIR$/pullphysiodicoms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pullsubject.sh" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +74,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -152,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626129269306</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Almost working pynetdicom c-move DICOM physiologs">
+      <created>1626217649457</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1626217649457</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -199,18 +209,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fix patient series search in shell scripts. Extend pynetdicom script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix patient series search in shell scripts. Extend pynetdicom script" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/pullphysiodicoms.py</url>
-          <line>133</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Almost working pynetdicom c-move DICOM physiologs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Almost working pynetdicom c-move DICOM physiologs" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dicomkit_pullstudy.py">
