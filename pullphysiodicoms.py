@@ -5,40 +5,78 @@ Pull all physio DICOM files (*_Physiolog) from a Horos server
 AUTHOR : Mike Tyszka
 PLACE  : Caltech
 DATES  : 2021-07-13 JMT From scratch
+         2021-07-15 JMT Add subject list text file argument
 """
 
 import os
+import sys
 import argparse
-
+import pandas as pd
 from pydicom import Dataset
-
 from pynetdicom import (AE, evt, debug_logger, _config)
 import pynetdicom.sop_class as psc
+
 
 def main():
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Retrieve studies from a DICOM server')
 
-    parser.add_argument('-s', '--subjectname', help='Subject Name')
+    parser.add_argument('-s', '--subjectlist', default='',
+                        help='Subject ID text file, one ID per line ['' -> All subjects]')
+    parser.add_argument('-od', '--outputdir', default='dicom',
+                        help="Destination directory ['./dicom']")
+    parser.add_argument('-ra', '--remoteaddr', required=True,
+                        help='IP address or hostname of remote SCP')
+    parser.add_argument('-rp', '--remoteport', type=int, required=True,
+                        help='Port of remote SCP')
+    parser.add_argument('-lae', '--localaet', default='LOCAL_STORE_SCP',
+                        help="Local store SCP AE title ['LOCAL_STORE_SCP']")
+    parser.add_argument('-lp', '--localport', type=int, default='11114',
+                        help="Local store SCP port ['11114']")
 
     args = parser.parse_args()
+    subj_list_fname = args.subjectlist
 
-    # Horos IP and port
-    addr = '131.215.79.36'
-    port = 11112
+    remote_addr = args.remoteaddr
+    remote_port = int(args.remoteport)
+    local_aet = args.localaet
+    local_port = int(args.localport)
 
     # Search for CMRR MB EPI Physio log DICOMs
-    # series_search = "*SBRef"
     series_search = "*Physiolog"
 
-    uids = find_series(addr, port, series_search)
+    # Load subject list from file
+    if subj_list_fname:
+        try:
+            print('Loading subject list from {}'.format(subj_list_fname))
+            subj_df = pd.read_csv(subj_list_fname, sep=',', header=None)
+            subject_list = subj_df[0].values
+        except FileNotFoundError as err:
+            print('* Subject list {} not found - exiting'.format(subj_list_fname))
+            sys.exit(1)
+
+    # Query remote SCP using a series description search expression
+    # Returns list of Patient ID, Series Description, Study UID, Series UID for matches
+    uids = find_series(remote_addr, remote_port, series_search)
 
     # C-MOVE all Physiolog series from the Horos server to a local directory
-    retrieve_series(addr, port, uids)
+    # Exclude Subject/Patient IDs not in subject_list
+    retrieve_series(remote_addr, remote_port, local_aet, local_port, uids, subject_list)
 
 
-def find_series(addr, port, series_search):
+def find_series(remote_addr, remote_port, series_search):
+    """
+    Perform series level query of remote SCP
+
+    :param remote_addr: str
+        IP address or hostname of remote SCP
+    :param remote_port: int
+        Port number of remote SCP
+    :param series_search: str
+        Series-level search term (wildcards allowed)
+    :return:
+    """
 
     # Initialise the Application Entity
     ae = AE()
@@ -48,7 +86,7 @@ def find_series(addr, port, series_search):
     ae.add_requested_context(psc.StudyRootQueryRetrieveInformationModelFind)
 
     # Associate with peer AE
-    assoc = ae.associate(addr, port)
+    assoc = ae.associate(remote_addr, remote_port)
 
     # Create a study level query
     ds = Dataset()
@@ -63,7 +101,7 @@ def find_series(addr, port, series_search):
 
     if assoc.is_established:
 
-        print('Association with {}:{} established'.format(addr, port))
+        print('Association with {}:{} established'.format(remote_addr, remote_port))
 
         # Use the C-FIND service to send the identifier
         responses = assoc.send_c_find(ds, psc.StudyRootQueryRetrieveInformationModelFind)
@@ -106,7 +144,7 @@ def find_series(addr, port, series_search):
     return uids
 
 
-def retrieve_series(remote_addr, remote_port, uids, debug=False):
+def retrieve_series(remote_addr, remote_port, local_aet, local_port, uids, subject_list, debug=False):
     """
     Retrieve study/series specified in UID info list from remote SCP
 
@@ -114,8 +152,14 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
         Remote SCP IP address or hostname
     :param remote_port: int
         Remote SCP port
+    :param local_ae: str
+        Local STORE SCP AE title
+    :param local_port: int
+        Local STORE SCP port
     :param uids: list
         List of tuples containing patient/study/series UID info
+    :param subject_list: list of str
+        Allowed subject/patient IDs (exclude IDs not in this list)
     :param debug: bool
         Debug flag
     :return:
@@ -147,12 +191,11 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
     # # Add support for Siemens private SOP context
     # ae.add_supported_context('1.3.12.2.1107.5.9.1')
 
-    # Start our local store SCP to catch incoming data
-    local_aet = 'LOCAL_STORE_SCP'
-    local_port = 11113
+    # Setup local STORE event handler to write DICOM file to disk
     handlers = [(evt.EVT_C_STORE, handle_store)]
 
-    print('Starting local storage SCP {} on port {}'.format(local_aet, local_port))
+    # Start our local store SCP to catch incoming data
+    print('Starting local storage SCP {} on remote_port {}'.format(local_aet, local_port))
     local_scp = ae.start_server(('', local_port), block=False, evt_handlers=handlers)
 
     # Loop over all patient/study/series UID info
@@ -161,55 +204,61 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
         # Unpack UID info
         pat_id, ser_desc, study_uid, series_uid = uid
 
-        # Create a new series level query dataset
-        ds = Dataset()
-        ds.QueryRetrieveLevel = 'SERIES'
-        ds.PatientID = pat_id
-        ds.StudyInstanceUID = study_uid
-        ds.SeriesInstanceUID = series_uid
-        ds.SeriesDate = []
+        if pat_id in subject_list:
 
-        # Associate our local AE with the remote AE for C-MOVE and C-STORE
-        assoc = ae.associate(remote_addr, remote_port)
+            # Create a new series level query dataset
+            ds = Dataset()
+            ds.QueryRetrieveLevel = 'SERIES'
+            ds.PatientID = pat_id
+            ds.StudyInstanceUID = study_uid
+            ds.SeriesInstanceUID = series_uid
+            ds.SeriesDate = []
 
-        if assoc.is_established:
+            # Associate our local AE with the remote AE for C-MOVE and C-STORE
+            assoc = ae.associate(remote_addr, remote_port)
 
-            print('')
-            print('Remote association with {}:{} established'.format(remote_addr, remote_port))
-            print('Sending C-MOVE for {} : {}'.format(pat_id, ser_desc))
+            if assoc.is_established:
 
-            # Send a C-MOVE request to the remote AE
-            responses = assoc.send_c_move(ds, local_aet, psc.StudyRootQueryRetrieveInformationModelMove)
+                print('')
+                print('Remote association with {}:{} established'.format(remote_addr, remote_port))
+                print('Sending C-MOVE for {} : {}'.format(pat_id, ser_desc))
 
-            # Iterate over responses
-            for (status, identifier) in responses:
+                # Send a C-MOVE request to the remote AE
+                responses = assoc.send_c_move(ds, local_aet, psc.StudyRootQueryRetrieveInformationModelMove)
 
-                if status:
+                # Iterate over responses
+                for (status, identifier) in responses:
 
-                    s = status.Status
-                    msg = ''
+                    if status:
 
-                    if s == 0x0000:
-                        msg = 'Success!'
-                    elif s in [0xFF00, 0xFF01]:
-                        msg = 'Pending ...'
-                    elif s & 0xF000 == 0xC000:
-                        msg = 'Unable to process'
-                    elif s == 0xa702:
-                        msg = 'Out of Resources - Unable to perform sub-operation'
+                        s = status.Status
+                        msg = ''
 
-                    print('  Response 0x{:04x} : {:s}'.format(s, msg))
+                        if s == 0x0000:
+                            msg = 'Success!'
+                        elif s in [0xFF00, 0xFF01]:
+                            msg = 'Pending ...'
+                        elif s & 0xF000 == 0xC000:
+                            msg = 'Unable to process'
+                        elif s == 0xa702:
+                            msg = 'Out of Resources - Unable to perform sub-operation'
+                        elif s == 0xa801:
+                            msg = 'Refused: Move destination unknown'
+                        else:
+                            msg = 'Unknown response'
 
-                else:
+                        print('  Response 0x{:04x} : {:s}'.format(s, msg))
 
-                    print('Connection timed out, was aborted or received invalid response')
+                    else:
 
-            print('  Releasing remote association')
-            assoc.release()
+                        print('Connection timed out, was aborted or received invalid response')
 
-        else:
+                print('  Releasing remote association')
+                assoc.release()
 
-            print('Association rejected, aborted or never connected')
+            else:
+
+                print('Association rejected, aborted or never connected')
 
     # Shut down local store SCP
     local_scp.shutdown()
