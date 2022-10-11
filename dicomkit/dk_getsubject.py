@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Pull all physio DICOM files (*_Physiolog) from a Horos server
+Pull all physio DICOM files (*_Physiolog) from a Horos server for a given subject
 
 AUTHOR : Mike Tyszka
 PLACE  : Caltech
@@ -8,12 +8,14 @@ DATES  : 2021-07-13 JMT From scratch
 """
 
 import os
+import os.path as op
 import argparse
 
 from pydicom import Dataset
 
-from pynetdicom import (AE, evt, debug_logger, _config)
+from pynetdicom import (AE, evt, debug_logger, _config, StoragePresentationContexts)
 import pynetdicom.sop_class as psc
+
 
 def main():
 
@@ -25,12 +27,15 @@ def main():
     args = parser.parse_args()
 
     # Horos IP and port
-    addr = '131.215.79.36'
+    addr = '131.215.9.56'
     port = 11112
 
+    print('DICOMKIT Study Retriever')
+    print('------------------------')
+    print(f'Remote Host IP : {addr}:{port}')
+
     # Search for CMRR MB EPI Physio log DICOMs
-    # series_search = "*SBRef"
-    series_search = "*Physiolog"
+    series_search = "*SBRef"
 
     uids = find_series(addr, port, series_search)
 
@@ -135,7 +140,9 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
         debug_logger()
 
     # Create our local Application Entity
-    ae = AE()
+    local_aet = 'dicomkit'
+    local_port = 11113
+    ae = AE(ae_title=local_aet)
 
     # Add presentation context (QR Move)
     ae.add_requested_context(psc.StudyRootQueryRetrieveInformationModelMove)
@@ -148,8 +155,6 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
     # ae.add_supported_context('1.3.12.2.1107.5.9.1')
 
     # Start our local store SCP to catch incoming data
-    local_aet = 'LOCAL_STORE_SCP'
-    local_port = 11113
     handlers = [(evt.EVT_C_STORE, handle_store)]
 
     print('Starting local storage SCP {} on port {}'.format(local_aet, local_port))
@@ -160,6 +165,11 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
 
         # Unpack UID info
         pat_id, ser_desc, study_uid, series_uid = uid
+
+        print(f'  Patient ID  : {pat_id}')
+        print(f'  Series Desc : {ser_desc}')
+        print(f'  Study UID   : {study_uid}')
+        print(f'  Series UID  : {series_uid}')
 
         # Create a new series level query dataset
         ds = Dataset()
@@ -174,9 +184,8 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
 
         if assoc.is_established:
 
-            print('')
-            print('Remote association with {}:{} established'.format(remote_addr, remote_port))
-            print('Sending C-MOVE for {} : {}'.format(pat_id, ser_desc))
+            print(f'\nRemote association with {remote_addr}:{remote_port} established')
+            print(f'Sending C-MOVE for {pat_id} : {ser_desc}')
 
             # Send a C-MOVE request to the remote AE
             responses = assoc.send_c_move(ds, local_aet, psc.StudyRootQueryRetrieveInformationModelMove)
@@ -190,13 +199,15 @@ def retrieve_series(remote_addr, remote_port, uids, debug=False):
                     msg = ''
 
                     if s == 0x0000:
-                        msg = 'Success!'
+                        msg = 'SUCCESS!'
                     elif s in [0xFF00, 0xFF01]:
-                        msg = 'Pending ...'
+                        msg = 'PENDING ...'
                     elif s & 0xF000 == 0xC000:
-                        msg = 'Unable to process'
+                        msg = 'FAILURE: Unable to process'
                     elif s == 0xa702:
-                        msg = 'Out of Resources - Unable to perform sub-operation'
+                        msg = 'FAILURE: Unable to perform sub-operation'
+                    elif s == 0xa801:
+                        msg = 'FAILURE: Move destination unknown'
 
                     print('  Response 0x{:04x} : {:s}'.format(s, msg))
 
@@ -227,7 +238,8 @@ def handle_store(event):
     ds.file_meta = event.file_meta
 
     # Create output directory if needed
-    out_dir = 'dicom'
+    out_dir = op.realpath('dicom')
+    print(f'Creating output folder {out_dir}')
     os.makedirs(out_dir, exist_ok=True)
 
     # Save the dataset using the SOP Instance UID as the filename
