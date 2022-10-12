@@ -70,6 +70,8 @@ def find_sessions(addr, port):
     ds.StudyDate = ''
     ds.StudyTime = ''
     ds.ReferringPhysicianName = ''
+    ds.AdmittingDiagnosesDescription = ''
+    ds.StudyDescription = ''
     ds.AccessionNumber = ''
 
     # Capture study and series UIDs for C-MOVE
