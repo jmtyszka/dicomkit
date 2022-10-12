@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="Working pull physiodicoms.py. Moved dcmtk scripts to old_bash">
-      <change afterPath="$PROJECT_DIR$/dicomkit/dk_query.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dicomkit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dicomkit.iml" afterDir="false" />
+    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="Refactor modules and add remote session query">
+      <change afterPath="$PROJECT_DIR$/dicomkit/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pullphysiodicoms.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/dk_getsubject.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicomkit/dk_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/dk_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +77,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "last_opened_file_path": "/Users/jmt/GitHub/dicomkit/dicomkit",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
@@ -180,7 +179,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626287455441</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Refactor modules and add remote session query">
+      <created>1665529290688</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1665529290688</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -228,7 +234,8 @@
     <MESSAGE value="Fix patient series search in shell scripts. Extend pynetdicom script" />
     <MESSAGE value="Almost working pynetdicom c-move DICOM physiologs" />
     <MESSAGE value="Working pull physiodicoms.py. Moved dcmtk scripts to old_bash" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working pull physiodicoms.py. Moved dcmtk scripts to old_bash" />
+    <MESSAGE value="Refactor modules and add remote session query" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor modules and add remote session query" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dicomkit_pullstudy.py">
