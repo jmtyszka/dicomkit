@@ -78,6 +78,7 @@ def find_sessions(addr, port):
     if assoc.is_established:
 
         print('Association with {}:{} established'.format(addr, port))
+        print('')
 
         # Use the C-FIND service to send the identifier
         responses = assoc.send_c_find(ds, psc.StudyRootQueryRetrieveInformationModelFind)
@@ -92,8 +93,7 @@ def find_sessions(addr, port):
                 # If the status is 'Pending' then identifier is the C-FIND response
                 if status.Status == 0xFF00:
 
-                    print('')
-                    print('Pending {}'.format(identifier.PatientID))
+                    print('Querying {}'.format(identifier.PatientID))
 
                     # Add study and series UIDs to collection
                     uids.append((
@@ -114,9 +114,9 @@ def find_sessions(addr, port):
         ])
 
         # Release the association
-        print('\nReleasing remote association')
+        print('\nRequesting remote association release')
         assoc.release()
-        print('Done')
+        print('Remote association closed')
 
     else:
 
