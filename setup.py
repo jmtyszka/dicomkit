@@ -181,8 +181,9 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
         'console_scripts': [
-            'dk_getsubject=dicomkit.dk_getsubject:main',
+            'dk_getpatient=dicomkit.dk_getpatient:main',
             'dk_query=dicomkit.dk_query:main',
+            'dk_horos2fw=dicomkit.dk_horos2fw:main',
         ],
     },
 

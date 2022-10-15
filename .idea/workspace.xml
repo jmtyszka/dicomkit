@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="v2022.10.12 dk_query working for local Horos">
-      <change afterPath="$PROJECT_DIR$/dicomkit/dk_getpatient.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dicomkit/dk_horos2fw.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dicomkit/utils.py" afterDir="false" />
+    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="v2022.10.14 dk_horos2fw working with test study in local Horos">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bash/pullphysiodicom.sh" beforeDir="false" afterPath="$PROJECT_DIR$/bash/pullphysiodicom.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicomkit/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicomkit/dk_getsubject.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dicomkit/dk_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/dk_query.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -235,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665593941559</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="v2022.10.14 dk_horos2fw working with test study in local Horos">
+      <created>1665792788674</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1665792788674</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -286,7 +285,8 @@
     <MESSAGE value="Refactor modules and add remote session query" />
     <MESSAGE value="Refine study list query" />
     <MESSAGE value="v2022.10.12 dk_query working for local Horos" />
-    <option name="LAST_COMMIT_MESSAGE" value="v2022.10.12 dk_query working for local Horos" />
+    <MESSAGE value="v2022.10.14 dk_horos2fw working with test study in local Horos" />
+    <option name="LAST_COMMIT_MESSAGE" value="v2022.10.14 dk_horos2fw working with test study in local Horos" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dicomkit_pullstudy.py">
