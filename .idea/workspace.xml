@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="Refine study list query">
+    <list default="true" id="aa17c07f-682a-495e-b159-f1e41e7669de" name="Default" comment="v2022.10.12 dk_query working for local Horos">
+      <change afterPath="$PROJECT_DIR$/dicomkit/dk_getpatient.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dicomkit/dk_horos2fw.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dicomkit/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bash/pullphysiodicom.sh" beforeDir="false" afterPath="$PROJECT_DIR$/bash/pullphysiodicom.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicomkit/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dicomkit/dk_getsubject.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dicomkit/dk_query.py" beforeDir="false" afterPath="$PROJECT_DIR$/dicomkit/dk_query.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -14,8 +21,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Setup Script" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -90,8 +97,8 @@
       <recent name="$PROJECT_DIR$/dicomkit" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.dk_query">
-    <configuration name="dk_getsubject" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.dk_horos2fw">
+    <configuration name="dk_getpatient" type="PythonConfigurationType" factoryName="Python">
       <module name="dicomkit" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -103,11 +110,32 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dicomkit/dk_getsubject.py" />
-      <option name="PARAMETERS" value="-s ISVS1" />
+      <option name="SCRIPT_NAME" value="dicomkit.dk_getpatient" />
+      <option name="PARAMETERS" value="-pid ISVS1" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="dk_horos2fw" type="PythonConfigurationType" factoryName="Python">
+      <module name="dicomkit" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/sandbox/horos2fw" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="dicomkit.dk_horos2fw" />
+      <option name="PARAMETERS" value="-m test_map.csv" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
       <method v="2" />
@@ -134,7 +162,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.dk_getsubject" />
+      <item itemvalue="Python.dk_getpatient" />
+      <item itemvalue="Python.dk_horos2fw" />
       <item itemvalue="Python.dk_query" />
     </list>
   </component>
@@ -199,7 +228,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665533444546</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="v2022.10.12 dk_query working for local Horos">
+      <created>1665593941559</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1665593941559</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -249,7 +285,8 @@
     <MESSAGE value="Working pull physiodicoms.py. Moved dcmtk scripts to old_bash" />
     <MESSAGE value="Refactor modules and add remote session query" />
     <MESSAGE value="Refine study list query" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refine study list query" />
+    <MESSAGE value="v2022.10.12 dk_query working for local Horos" />
+    <option name="LAST_COMMIT_MESSAGE" value="v2022.10.12 dk_query working for local Horos" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/dicomkit_pullstudy.py">

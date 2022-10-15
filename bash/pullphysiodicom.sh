@@ -27,7 +27,7 @@ local_port=11113
 # Construct search keys for patient and series
 search_keys="-k 0008,0052=""SERIES"" -k 0008,103e=""*Physiolog"""
 
-# Query context - study level
+# Query context - study_row level
 context="-S"
 
 # Output directory
