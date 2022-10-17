@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: dicomkit
+Version: 2022.10.11
+Summary: Remote DICOM Query and Retrive Tools
+Home-page: https://github.com/jmtyszka/dicomkit
+Author: Julian Michael Tyszka
+Author-email: jmt@caltech.edu
+Project-URL: Bug Reports, https://github.com/jmtyszka/dicomkit/issues
+Project-URL: Funding, http://cbic.caltech.edu/
+Project-URL: Source, https://github.com/jmtyszka/dicomkit/
+Keywords: neuroimaging MRI fMRI DICOM
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.9, <4
+Description-Content-Type: text/markdown
+
+# dicomkit
+
+Python Q&R from a remote or local Horos server.
+
+Specific support for CMRR MB-EPI DICOM Physiolog files which
+use a private SOP class UID and cause display problems with Horos
+and C-STORE problems with dcmtk.
+
+### Dependencies
+Implemented using pynetdicom 2.0 which supports private SOP classes.

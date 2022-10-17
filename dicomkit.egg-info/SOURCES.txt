@@ -1,0 +1,11 @@
+README.md
+setup.py
+dicomkit/__init__.py
+dicomkit/dk_getsubject.py
+dicomkit/dk_query.py
+dicomkit.egg-info/PKG-INFO
+dicomkit.egg-info/SOURCES.txt
+dicomkit.egg-info/dependency_links.txt
+dicomkit.egg-info/entry_points.txt
+dicomkit.egg-info/not-zip-safe
+dicomkit.egg-info/top_level.txt
