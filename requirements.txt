@@ -1,4 +1,0 @@
-setuptools~=71.0.4
-pynetdicom~=2.1.0
-pydicom~=2.4.4
-pandas~=1.5.0

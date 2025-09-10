@@ -1,3 +1,0 @@
-[console_scripts]
-dk_getsubject = dicomkit.dk_getsubject:main
-dk_query = dicomkit.dk_query:main
